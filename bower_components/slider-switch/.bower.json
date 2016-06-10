@@ -1,0 +1,26 @@
+{
+  "name": "slider-switch",
+  "description": "this is a prototype switch component for a custom slider",
+  "main": "slider-switch.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  },
+  "homepage": "https://github.com/angelsalazar/slider-switch",
+  "version": "0.0.2",
+  "_release": "0.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.2",
+    "commit": "f6d9887e5f0fd41e241b41ee9aee805989cc6ae3"
+  },
+  "_source": "git://github.com/angelsalazar/slider-switch.git",
+  "_target": "^0.0.2",
+  "_originalSource": "angelsalazar/slider-switch",
+  "_direct": true
+}

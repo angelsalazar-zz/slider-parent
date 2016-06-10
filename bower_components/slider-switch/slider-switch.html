@@ -1,0 +1,55 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<dom-module id="slider-switch">
+   <template>
+     <style>
+         :host {
+             display: block;
+         }
+         .switch{
+             position: absolute;
+             margin-left: -5px;
+             height: 100%;
+             width: 10px;
+         }
+    </style>
+    <svg class="switch" style$="left:{{pos}}px" on-track="handleTrack">
+        <polygon points$="{{points}}" />
+    </svg>
+  </template>
+   <script>
+       Polymer({
+           is: 'slider-switch',
+           properties:{
+               up:{
+                   type: Boolean,
+                   observer: '_upChanged'
+               },
+               pos:{
+                   type: Number,
+                   value: 0
+               },
+               points: {
+                    type: String,
+                   value: "1,1 9,1 5,9"
+               }
+           },
+           handleTrack: function(e){
+               this._moveSlider(e);
+           },
+           _moveSlider:function(e){
+               var elementPos = $(e.currentTarget).parent().offset();
+               var posX = e.detail.x - elementPos.left;
+               if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
+                   $(e.currentTarget).css('left', posX+'px');
+                   this.pos = posX;
+               }
+           },
+           _upChanged:function(newUp){
+               if(newUp)
+                   this.points = "1,9 9,9 5,1";
+                   
+           }
+       });
+  </script>
+</dom-module>
