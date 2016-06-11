@@ -12,15 +12,15 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
   "homepage": "https://github.com/angelsalazar/slider-bar",
-  "version": "0.0.1",
-  "_release": "0.0.1",
+  "version": "0.0.2",
+  "_release": "0.0.2",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1",
-    "commit": "85e81765730e8be25bb5d511e221b2c8b98e3b5b"
+    "tag": "v0.0.2",
+    "commit": "3dbfd42dc6f562036bbd89b4dc2aebf8ae5b1686"
   },
   "_source": "git://github.com/angelsalazar/slider-bar.git",
-  "_target": "^0.0.1",
+  "_target": "^0.0.2",
   "_originalSource": "angelsalazar/slider-bar",
   "_direct": true
 }

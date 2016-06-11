@@ -12,15 +12,15 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
   },
   "homepage": "https://github.com/angelsalazar/slider-switch",
-  "version": "0.0.2",
-  "_release": "0.0.2",
+  "version": "0.0.3",
+  "_release": "0.0.3",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.2",
-    "commit": "f6d9887e5f0fd41e241b41ee9aee805989cc6ae3"
+    "tag": "v0.0.3",
+    "commit": "e49956e47f2a69e93c01b85f61da7f42cd6b18cb"
   },
   "_source": "git://github.com/angelsalazar/slider-switch.git",
-  "_target": "^0.0.2",
+  "_target": "^0.0.3",
   "_originalSource": "angelsalazar/slider-switch",
   "_direct": true
 }
