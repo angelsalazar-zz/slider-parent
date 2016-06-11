@@ -1,0 +1,17 @@
+{
+  "name": "slider-parent",
+  "description": "range slider prototype",
+  "main": "slider-parent.html",
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.4.0",
+    "slider-zone": "angelsalazar/slider-zone#^0.0.2",
+    "slider-switch": "angelsalazar/slider-switch#^0.0.3",
+    "slider-bar": "angelsalazar/slider-bar#^0.0.2"
+  },
+  "devDependencies": {
+    "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
+    "iron-demo-helpers": "PolymerElements/iron-demo-helpers#^1.0.0",
+    "web-component-tester": "^4.0.0",
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0"
+  }
+}
