@@ -83,16 +83,17 @@
           //     console.log(Polymer.dom(this.$.upper).querySelectorAll("slider-switch is-selected"));
           // },
           _handleTrack: function(e){
-            console.log("Moving started");
+            // console.log("Moving started");
                this._moveSlider(e);
            },
            _moveSlider:function(e){
-               var elementPos = $(e.currentTarget).parent().offset();
-               var posX = e.detail.x - elementPos.left;
-               if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
-                   $(e.currentTarget).css('left', posX+'px');
-                   this.pos = posX;
-               }
+             console.log(e.currentTarget);
+              //  var elementPos = $(e.currentTarget).parent().offset();
+              //  var posX = e.detail.x - elementPos.left;
+              //  if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
+              //      $(e.currentTarget).css('left', posX+'px');
+              //      this.pos = posX;
+              //  }
            },
           _handlesChanged:function (newValue,oldValue){
               console.log("# handles : " + newValue);
