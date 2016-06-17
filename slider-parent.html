@@ -91,7 +91,7 @@
                var posX = e.detail.x - elementPos.left;
                if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
                    $(e.currentTarget).css('left', posX+'px');
-                   this.pos = posX;
+                   this.$$("switch").setPosition(posX);
                }
            },
           _handlesChanged:function (newValue,oldValue){
