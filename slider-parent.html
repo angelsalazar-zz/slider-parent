@@ -92,6 +92,7 @@
                if(posX >= 0 && posX <= $(e.currentTarget).width()){
                  var upper = Polymer.dom(this.$.upper);
                  var _switch = Polymer.dom(upper).firstElementChild;
+                 $(_switch).css('left', posX+'px');
                  _switch.setPosition(posX);
                }
            },
