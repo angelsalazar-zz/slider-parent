@@ -86,6 +86,7 @@
                this._moveSlider(e);
            },
            _moveSlider:function(e){
+              console.log("Move slider invoked");
                var elementPos = $(e.currentTarget).parent().offset();
                var posX = e.detail.x - elementPos.left;
                if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
