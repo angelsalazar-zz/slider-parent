@@ -18,7 +18,7 @@
         </slider-zone>
         <slider-bar></slider-bar>
         <slider-zone id="lower">
-            <slider-switch on-tap="_handleTap" up is-highlighted="false"></slider-switch>
+            <slider-switch on-tap="_handleTap" on-track="_handleTrack" up is-highlighted="false"></slider-switch>
         </slider-zone>
   </template>
 
@@ -86,12 +86,13 @@
                this._moveSlider(e);
            },
            _moveSlider:function(e){
-              console.log("Move slider invoked");
-               var elementPos = $(e.currentTarget).parent().offset();
+               console.log("Move slider invoked");
+               var elementPos = $(e.currentTarget).offset(); // Current Target here is slider-parent
                var posX = e.detail.x - elementPos.left;
-               if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
-                   $(e.currentTarget).css('left', posX+'px');
-                   console.log(this.$$("switch"));
+               if(posX >= 0 && posX <= $(e.currentTarget).width()){
+                 var upper = Polymer.dom(this.$.upper);
+                 var _switch = Polymer.dom(upper).firstElementChild;
+                 _switch.setPosition(posX);
                }
            },
           _handlesChanged:function (newValue,oldValue){
