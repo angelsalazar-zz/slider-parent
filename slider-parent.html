@@ -11,7 +11,6 @@
         :host {
             display: flex;
             width: 100%;
-            /*position: relative;*/
             height: 25px;
         }
         :host > .slider-main{
@@ -36,16 +35,16 @@
             </slider-zone>
             <slider-bar></slider-bar>
             <slider-zone id="lower">
-                <slider-switch id="lsh" on-tap="_addHandle" up></slider-switch>
+                <slider-switch id="lsh" on-tap="_handleTap" on-track="_handleTrack"  up></slider-switch>
             </slider-zone>
         </div>
         <slider-endpoint id="high"></slider-endpoint>
         <ul>
-            <li>{{lshv}}</li>
-            <template is="dom-repeat" items="{{_objects}}">
+            <template is="dom-repeat" items="{{selected}}">
                 <li>{{item.pos}}</li>
             </template>
         </ul>
+        <array-selector id="selector" items="{{_objects}}" selected="{{selected}}" multi toggle></array-selector>
   </template>
 
   <script>
@@ -87,12 +86,7 @@
            *Set the slider specify in the attribute handles
            */
           ready:function(){
-              var self  = this;                                                         //get slider-parent reference
-              self.lshv = 0;
-              self.setHandles(this.handles);                                            //set initial handles
-              self.$.lsh.addEventListener('track',function(e){                          //retarget track event to slider-handle located
-                  self.lshv = self._mapBoundaries(e,this.pos);                          //in the lower slider-zone
-              });
+              this.setHandles(this.handles);                                            //set initial handles
           },
           /*Public function
            *Append slider-handles to the slider-zone
@@ -112,39 +106,65 @@
           /*Private function
            *Create a slider-handle and append it to the slider-zone
            */
-          _attachSliderHandle:function(){
-              var self = this;                                              //get slider-parent reference                  
+          _attachSliderHandle:function(){                                               
               var s_h = Polymer.Base.create('slider-switch');               //Create slider-handle component
               var generatedId = this._getNewId();                           //Generated new id based on slider-zone's children
               Polymer.dom(this.$.upper).appendChild(s_h);                   //Append slider-handle to the slider-zone
               this.set('id',generatedId,s_h);                               //Set id to the slider-handle                                    
-              this.push('_objects',{pos:s_h.pos});                          //push slider-handle position to the _objects array
-              //retarget track event to slider-handle
-              s_h.addEventListener('track',function(e){
-                  //Update slider-handle position in the _objects array, when tracked
-                  self.set('_objects.'+this.id+'.pos',self._mapBoundaries(e,this.pos));
-              });
-              this.listen(s_h, 'tap', '_deleteHandle');                     //add Tap event listener
+              this.push('_objects',{pos:0});                                //push slider-handle position to the _objects array
+              //this.listen(s_h, 'tap', '_deleteHandle');                   //add Tap event listener
+              this.listen(s_h, 'tap', '_toggleSelection');                   //add Tap event listener
               Polymer.dom.flush();
           },
           //attach a slider-handle based on position
-          _addHandle:function(e){
-              var self = this;                                                          //get slider-parent reference
+          _handleTap:function(e){
               var s_h = Polymer.Base.create('slider-switch');                           //create slider-handle component
               var generatedId = this._getNewId();                                       //Generated new id based on slider-zone's children
               this.set('pos',this._getCurrentPosition(e),s_h);                          //set Attribute (pos = currentPosition)
+              this.push('_objects',{pos : this._mapBoundaries(e,s_h.pos) });            //push slider-handle position to the _objects array
               Polymer.dom(this.$.upper).appendChild(s_h);                               //Append slider-handle to the slider-zone
               this.set('id',generatedId,s_h);                                           //Set id to the slider-handle
-              this.push('_objects',{pos : this._mapBoundaries(e,s_h.pos) });            //push slider-handle position to the _objects array
-              this._setHandles();
-              //retarget track event to slider-handle
-              s_h.addEventListener('track',function(e){
-                  //Update slider-handle position in the _objects array, when tracked
-                  self.set('_objects.'+this.id+'.pos',self._mapBoundaries(e,this.pos));
-              });
-              this.listen(s_h, 'tap', '_deleteHandle');                                 //add Tap event listener
-              Polymer.dom.flush(); 
+              //this.listen(s_h, 'track', '_handleTrack');                                //add Tap event listener
+              this.listen(s_h, 'tap', '_toggleSelection');                               //add Tap event listener
+              Polymer.dom.flush()
+
           },
+          // _handleTrack: function (e) {
+          //     console.log(Polymer.dom(this.$.upper).querySelectorAll("slider-switch is-selected"));
+          // },
+          _handleTrack: function(e){
+              this._moveSlider(e);
+           },
+          _moveSlider:function(e){
+            //console.log(this.startDrag);
+            var elementPos = $(e.currentTarget).offset(); // Current Target here is slider-parent
+            if (e.detail.state==="start"){
+              this.startDrag = e.detail.x - elementPos.left; // Store this position as the start point of track
+            }
+            var posX = e.detail.x - elementPos.left;
+            // this.posX = posX;
+            // this.elemLeft = elementPos.left;
+            if(posX >= 0 && posX <= $(e.currentTarget).width()){
+                $(e.currentTarget)[0].pos = posX;
+                //$(e.currentTarget)[0].isTrackSource = true; // Flag this handle as the one on which tracking started
+                this.set('_objects.'+$(e.currentTarget)[0].id+'.pos',this._mapBoundaries(e,posX));
+            }
+            /*if($(e.currentTarget)[0].isSelected){ // If it is a blue handle (selected), then it will also move other selected handles
+              var elemList = (Polymer.dom(this.$.upper).childNodes); // Get child nodes
+              for (var i=0;i<elemList.length;i++){ //iterate
+                  if (elemList[i].isSelected){ // check to see if it is a selected handle
+                    this.initialPos = elemList[i].pos;// store this position
+                    var newPos = e.detail.x-this.initialPos-this.startDrag; // <--- SIMPLY NOT WORKING!!!
+                    if(newPos >= 0 && newPos <= $(e.currentTarget).width()){
+                      if(!elemList[i].isTrackSource){ // Make sure this is not e.currentTarget ! because we have moved it already
+                          elemList[i].pos = newPos;
+                      }
+                    }
+                  }
+              }
+              $(e.currentTarget)[0].isTrackSource = false; // Disable the flag for next cycle of track events
+            }*/
+           },
           //get the X current location when clicking the slider-handle located in the lower slider-zone
           _getCurrentPosition(e){
               var elementPos = $(e.currentTarget).parent().offset();    //Get slider-slider offSet
@@ -206,6 +226,15 @@
                       this.min = this.min - 1;
                   }
               }
+          },
+          _toggleSelection: function(e) {
+              //slider-switch should have index prop
+              var item = this.get('_objects.#'+e.currentTarget.id);
+              if(e.currentTarget.isSelected)
+                  this.listen(e.currentTarget,'track','_handleTrack');
+              else
+                  this.unlisten(e.currentTarget,'track','_handleTrack')
+              this.$.selector.select(item);
           }
           
           
