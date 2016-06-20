@@ -4,10 +4,10 @@
   "main": "slider-parent.html",
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0",
-    "slider-zone": "angelsalazar/slider-zone#^0.0.2",
-    "slider-bar": "angelsalazar/slider-bar#^0.0.2",
-    "slider-endpoint": "angelsalazar/slider-endpoint#angel",
-    "slider-switch": "angelsalazar/slider-switch#^0.0.4"
+    "slider-zone": "angelsalazar/slider-zone#arefin",
+    "slider-switch": "angelsalazar/slider-switch#arefin",
+    "slider-bar": "angelsalazar/slider-bar#arefin",
+    "slider-endpoint": "angelsalazar/slider-endpoint#angel"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",

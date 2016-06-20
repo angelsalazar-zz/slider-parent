@@ -49,33 +49,29 @@
 
   <script>
       Polymer({
-          is: 'slider-parent',                          //Custom element name
+          is: 'slider-parent',
           properties:{
-              //Number of handles
               handles:{
                   type: Number,
-                  value:1,       //default value
+                  value:1,
                   reflectToAttribute: true
               },
-              //Min limit value
               min:{
                   type:Number,
                   value:0,
                   reflectToAttribute: true
               },
-              //Max limit value
               max:{
                   type: Number,
                   value: 100,
                   reflectToAttribute: true
               },
-              //_private array that stores the dynamic created slider-handles' values
               _objects:{
                   type: Array,
                   value: function(){
                       return [];
                   },
-                  notify:true           //specifies that this property must be obversed
+                  notify:true
               }
           },
           //Observers array
@@ -86,7 +82,7 @@
            *Set the slider specify in the attribute handles
            */
           ready:function(){
-              this.setHandles(this.handles);                                            //set initial handles
+              this.setHandles(this.handles);
           },
           /*Public function
            *Append slider-handles to the slider-zone
@@ -100,7 +96,7 @@
                   this._attachSliderHandle();                                           //append a slider Handle to the upper slider-zone
                   this.setHandles(i);  
               }else{
-                  return;                                                               //finish recursion
+                  return;                                                               //End recursion
               }
           },
           /*Private function
@@ -113,7 +109,8 @@
               this.set('id',generatedId,s_h);                               //Set id to the slider-handle                                    
               this.push('_objects',{pos:0});                                //push slider-handle position to the _objects array
               //this.listen(s_h, 'tap', '_deleteHandle');                   //add Tap event listener
-              this.listen(s_h, 'tap', '_toggleSelection');                   //add Tap event listener
+              this.listen(s_h, 'tap', '_toggleSelection');                  //add Tap event listener
+              this.listen(s_h, 'track', '_handleTrack');
               Polymer.dom.flush();
           },
           //attach a slider-handle based on position
@@ -124,8 +121,7 @@
               this.push('_objects',{pos : this._mapBoundaries(e,s_h.pos) });            //push slider-handle position to the _objects array
               Polymer.dom(this.$.upper).appendChild(s_h);                               //Append slider-handle to the slider-zone
               this.set('id',generatedId,s_h);                                           //Set id to the slider-handle
-              this._updateHandles();
-              //this.listen(s_h, 'track', '_handleTrack');                                //add Tap event listener
+              this.listen(s_h, 'track', '_handleTrack');                                //add Tap event listener
               this.listen(s_h, 'tap', '_toggleSelection');                               //add Tap event listener
               Polymer.dom.flush()
 
@@ -213,7 +209,7 @@
               //get upper slider-zone children
               return (this.$.upper.getEffectiveChildren().length);
           },
-          _updateHandles:function(){
+          _setHandles:function(){
               this.handles++;
           },
           _checkBoundaries: function(pos){
@@ -231,10 +227,10 @@
           _toggleSelection: function(e) {
               //slider-switch should have index prop
               var item = this.get('_objects.#'+e.currentTarget.id);
-              if(e.currentTarget.isSelected)
+              /*if(e.currentTarget.isSelected)
                   this.listen(e.currentTarget,'track','_handleTrack');
               else
-                  this.unlisten(e.currentTarget,'track','_handleTrack')
+                  this.unlisten(e.currentTarget,'track','_handleTrack')*/
               this.$.selector.select(item);
           }
           
@@ -242,3 +238,4 @@
     });
   </script>
 </dom-module>
+
