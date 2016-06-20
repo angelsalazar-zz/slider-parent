@@ -24,11 +24,13 @@
            properties:{
                up:{
                    type: Boolean,
+                   reflectToAttribute: true,
                    observer: '_upChanged'
                },
                pos:{
                    type: Number,
                    value: 0,
+                   reflectToAttribute: true
                },
                points: {
                     type: String,
@@ -43,12 +45,15 @@
                var posX = e.detail.x - elementPos.left;
                if(posX >= 0 && posX <= $(e.currentTarget).parent().width()){
                    $(e.currentTarget).css('left', posX+'px');
-                   this.pos = posX;
+                   this._setPos(posX);
                }
            },
            _upChanged:function(newUp){
                if(newUp)
                    this.points = "1,9 9,9 5,1";   
+           },
+           _setPos:function(pos){
+               this.pos = pos;
            }
        });
   </script>

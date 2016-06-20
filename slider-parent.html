@@ -2,15 +2,22 @@
 <link rel="import" href="../slider-bar/slider-bar.html">
 <link rel="import" href="../slider-zone/slider-zone.html">
 <link rel="import" href="../slider-switch/slider-switch.html">
+<link rel="import" href="../slider-endpoint/slider-endpoint.html">
+
 
 <dom-module id="slider-parent">
   <template>
     <style>
         :host {
-            display: block;
+            display: flex;
             width: 100%;
-            position: relative;
+            /*position: relative;*/
             height: 25px;
+        }
+        :host > .slider-main{
+            display: inline-block;
+            height: 100%;
+            width: calc(100% - 50px);
         }
         :host > ul {
             list-style-type: none;
@@ -18,16 +25,21 @@
             padding: 0;
         }
         :host > ul li  {
+            border: 1px solid blue;
             margin-right: 4px;
             float: left;
         }
     </style>
-        <slider-zone id="upper">
-        </slider-zone>
-        <slider-bar></slider-bar>
-        <slider-zone id="lower">
-            <slider-switch id="lsh" on-tap="_addHandle" up></slider-switch>
-        </slider-zone>
+        <slider-endpoint id="low" min></slider-endpoint>
+        <div class="slider-main">
+            <slider-zone id="upper">
+            </slider-zone>
+            <slider-bar></slider-bar>
+            <slider-zone id="lower">
+                <slider-switch id="lsh" on-tap="_addHandle" up></slider-switch>
+            </slider-zone>
+        </div>
+        <slider-endpoint id="high"></slider-endpoint>
         <ul>
             <li>{{lshv}}</li>
             <template is="dom-repeat" items="{{_objects}}">
@@ -43,17 +55,20 @@
               //Number of handles
               handles:{
                   type: Number,
-                  value:1       //default value
+                  value:1,       //default value
+                  reflectToAttribute: true
               },
               //Min limit value
               min:{
                   type:Number,
-                  value:0
+                  value:0,
+                  reflectToAttribute: true
               },
               //Max limit value
               max:{
                   type: Number,
-                  value: 100
+                  value: 100,
+                  reflectToAttribute: true
               },
               //_private array that stores the dynamic created slider-handles' values
               _objects:{
@@ -73,6 +88,7 @@
            */
           ready:function(){
               var self  = this;                                                         //get slider-parent reference
+              self.lshv = 0;
               self.setHandles(this.handles);                                            //set initial handles
               self.$.lsh.addEventListener('track',function(e){                          //retarget track event to slider-handle located
                   self.lshv = self._mapBoundaries(e,this.pos);                          //in the lower slider-zone
@@ -109,7 +125,7 @@
                   self.set('_objects.'+this.id+'.pos',self._mapBoundaries(e,this.pos));
               });
               this.listen(s_h, 'tap', '_deleteHandle');                     //add Tap event listener
-              Polymer.dom.flush()
+              Polymer.dom.flush();
           },
           //attach a slider-handle based on position
           _addHandle:function(e){
@@ -120,6 +136,7 @@
               Polymer.dom(this.$.upper).appendChild(s_h);                               //Append slider-handle to the slider-zone
               this.set('id',generatedId,s_h);                                           //Set id to the slider-handle
               this.push('_objects',{pos : this._mapBoundaries(e,s_h.pos) });            //push slider-handle position to the _objects array
+              this._setHandles();
               //retarget track event to slider-handle
               s_h.addEventListener('track',function(e){
                   //Update slider-handle position in the _objects array, when tracked
@@ -137,7 +154,8 @@
           _deleteHandle: function(e){
               var deletedElement = Polymer.dom(this.$.upper).removeChild($(e.currentTarget)[0]);
               this.splice('_objects', deletedElement.id,1);
-              this._updateIds(deletedElement.id)
+              this._updateIds(deletedElement.id);
+              Polymer.dom.flush();
           },
           //Observer callback
           _objectsPosChanged: function(cr){
@@ -146,13 +164,21 @@
                   var itempath = cr.path.substring(0, nameSubpath);
                   var item = this.get(itempath);
                   var index = cr.base.indexOf(item);
+                  this._checkBoundaries(item.pos);
                   console.log('Item ' + index + ' changed, new position is: ' + item.pos);
+                    
               }
           },
           //Update slider-handles ids based on index of the deleted one
           _updateIds:function(index){
-              for(var i=index;i<this.$.upper.getEffectiveChildren().length;i++)
+              var i = index;
+              if(i < this.$.upper.getEffectiveChildren().length){
                   this.set('id',i,this.$.upper.getEffectiveChildren()[i]);
+                  i++;
+                  this._updateIds(i);
+              }else{
+                  return;
+              }
           },
           /*Map slider-hanlde value base on its position
            *@params {e: Event, positionX: slider-handle current x}
@@ -165,6 +191,21 @@
           _getNewId:function(){
               //get upper slider-zone children
               return (this.$.upper.getEffectiveChildren().length);
+          },
+          _setHandles:function(){
+              this.handles++;
+          },
+          _checkBoundaries: function(pos){
+              if(pos == this.max){
+                  if(!this.$.high.hardLimit){
+                      this.max = this.max + 1;
+                  }
+              }
+              if(pos == this.min){
+                  if(!this.$.low.hardLimit){
+                      this.min = this.min - 1;
+                  }
+              }
           }
           
           
