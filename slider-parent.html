@@ -13,12 +13,15 @@
             height: 25px;
         }
     </style>
-        
+    <div>Element Left: {{elemLeft}}<br>
+      PosX : {{posX}}<br>
+      Selected Left : {{selectedLeft}}
+    </div>
         <slider-zone id="upper">
         </slider-zone>
         <slider-bar></slider-bar>
         <slider-zone id="lower">
-            <slider-switch on-tap="_handleTap" up></slider-switch>
+            <slider-switch on-tap="_handleTap" on-track="_handleTrack" up is-bottom="true"></slider-switch>
         </slider-zone>
   </template>
 
@@ -38,7 +41,14 @@
               max:{
                   type: Number,
                   value: 100
+              },
+              startDrag:{
+                type: Number
+              },
+              initialPos:{
+                type: Number
               }
+
           },
           /*Ready function
            *Set the slider specify in the attribute handles
@@ -56,7 +66,7 @@
               if(numberOfHandles != 0){
                   i--;                                                 //decrease loops var
                   this._attachSliderHandle();                          //append a slider Handle to the upper slider-zone
-                  this.setHandles(i);  
+                  this.setHandles(i);
               }else{
                   return;                                               //End recursion
               }
@@ -64,10 +74,10 @@
           /*Private function
            *Create a slider-handle and append it to the slider-zone
            */
-          _attachSliderHandle:function(){     
+          _attachSliderHandle:function(){
               var s_h = Polymer.Base.create('slider-switch');           //create slider-handle component
               Polymer.dom(this.$.upper).appendChild(s_h);                //Append slider-handle to the slider-zone
-              this.listen(s_h, 'tap', '_deleteHandle');                 //add Tap event listener
+              this.listen(s_h, 'track', '_handleTrack');                 //add Drag event listener
               Polymer.dom.flush()
           },
           //attach a slider-handle based on position
@@ -75,10 +85,45 @@
               var s_h = Polymer.Base.create('slider-switch');           //create slider-handle component
               this.set('pos',this._getCurrentPosition(e),s_h);          //set Attribute (pos = currentPosition)
               Polymer.dom(this.$.upper).appendChild(s_h);               //Append slider-handle to the slider-zone
-              this.listen(s_h, 'tap', '_deleteHandle');                 //add Tap event listener
+              this.listen(s_h, 'track', '_handleTrack');                 //add Tap event listener
               Polymer.dom.flush()
-              
+
           },
+          // _handleTrack: function (e) {
+          //     console.log(Polymer.dom(this.$.upper).querySelectorAll("slider-switch is-selected"));
+          // },
+          _handleTrack: function(e){
+               this._moveSlider(e);
+           },
+          _moveSlider:function(e){
+            console.log(this.startDrag);
+            var elementPos = $(e.currentTarget).offset(); // Current Target here is slider-parent
+            if (e.detail.state==="start"){
+              this.startDrag = e.detail.x - elementPos.left; // Store this position as the start point of track
+            }
+            var posX = e.detail.x - elementPos.left;
+            // this.posX = posX;
+            // this.elemLeft = elementPos.left;
+            if(posX >= 0 && posX <= $(e.currentTarget).width()){
+             $(e.currentTarget)[0].pos = posX;
+             $(e.currentTarget)[0].isTrackSource = true; // Flag this handle as the one on which tracking started
+            }
+            if($(e.currentTarget)[0].isSelected){ // If it is a blue handle (selected), then it will also move other selected handles
+              var elemList = (Polymer.dom(this.$.upper).childNodes); // Get child nodes
+              for (var i=0;i<elemList.length;i++){ //iterate
+                  if (elemList[i].isSelected){ // check to see if it is a selected handle
+                    this.initialPos = elemList[i].pos;// store this position
+                    var newPos = e.detail.x-this.initialPos-this.startDrag; // <--- SIMPLY NOT WORKING!!!
+                    if(newPos >= 0 && newPos <= $(e.currentTarget).width()){
+                      if(!elemList[i].isTrackSource){ // Make sure this is not e.currentTarget ! because we have moved it already
+                          elemList[i].pos = newPos;
+                      }
+                    }
+                  }
+              }
+              $(e.currentTarget)[0].isTrackSource = false; // Disable the flag for next cycle of track events
+            }
+           },
           _handlesChanged:function (newValue,oldValue){
               console.log("# handles : " + newValue);
           },
@@ -91,7 +136,7 @@
           _deleteHandle: function(e){
               Polymer.dom(this.$.upper).removeChild($(e.currentTarget)[0]);     //remove the clicked child
           }
-          
+
     });
   </script>
 </dom-module>
