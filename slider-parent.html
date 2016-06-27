@@ -32,12 +32,12 @@
         <div class="slider-main">
             <slider-zone id="upper">
                 <template id="handles" is="dom-repeat" items="{{_objects}}">
-                    <slider-switch index="{{index}}" position="{{item.position}}" ></slider-switch>
+                    <slider-switch index="{{index}}" position="{{item.position}}" top-pos=-20 is-selectable></slider-switch>
                 </template>
             </slider-zone>
             <slider-bar></slider-bar>
             <slider-zone id="lower">
-                <slider-switch id="lsh" on-tap="_handleTap"  up></slider-switch>
+                <slider-switch id="lsh" on-tap="_handleTap" top-pos=12 up is-selectable></slider-switch>
             </slider-zone>
         </div>
         <slider-endpoint id="high"></slider-endpoint>
