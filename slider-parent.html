@@ -9,12 +9,12 @@
     <style>
         :host {
             display: flex;
-            height: auto;
             width: 100%;
             height: 25px;
         }
         :host > .slider-main{
             display: inline-block;
+            height: 100%;
             width: calc(100% - 50px);
         }
         :host > ul {
@@ -32,12 +32,12 @@
         <div class="slider-main">
             <slider-zone id="upper">
                 <template id="handles" is="dom-repeat" items="{{_objects}}">
-                    <slider-switch index="{{index}}" position="{{item.position}}" top-pos=-20 is-selectable="true"></slider-switch>
+                    <slider-switch index="{{index}}" position="{{item.position}}" top-pos=-20 is-selectable></slider-switch>
                 </template>
             </slider-zone>
             <slider-bar></slider-bar>
             <slider-zone id="lower">
-                <slider-switch id="lsh" on-tap="_handleTap"  up top-pos=12></slider-switch>
+                <slider-switch id="lsh" on-dblclick="_handleTap" top-pos=12 up></slider-switch>
             </slider-zone>
         </div>
         <slider-endpoint id="high"></slider-endpoint>
@@ -148,8 +148,9 @@
            },*/
           //get the X current location when clicking the slider-handle located in the lower slider-zone
           _getCurrentPosition(e){
-              var elementPos = $(e.currentTarget).parent().offset();    //Get slider-slider offSet
-              return e.detail.x - elementPos.left;                      //Compute current position on the X axis
+              // var elementPos = $(e.currentTarget).parent().offset();    //Get slider-slider offSet
+              // return e.clientX - elementPos.left;
+              return e.currentTarget.position;                 //Compute current position on the X axis
           },
           //detach the clicked slider-handle
           /*_deleteHandle: function(e){
