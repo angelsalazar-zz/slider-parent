@@ -20,14 +20,17 @@
     </style>
         <slider-endpoint id="low" min></slider-endpoint>
         <div class="slider-main">
-            <slider-zone id="upper">
-                <template id="handles" is="dom-repeat" items="{{_objects}}">
-                    <slider-switch index="{{index}}" position="{{item.position}}" top-pos=-20 is-selectable></slider-switch>
+            <slider-zone id="upper" min-value="{{mix}}" max-value="{{max}}">
+                <template id="handles" is="dom-repeat" items="{{objects}}">
+                    <slider-switch index="{{index}}"
+                                  value="{{item.value}}"
+                                  top-pos=-20
+                                  is-selectable></slider-switch>
                 </template>
             </slider-zone>
             <slider-bar></slider-bar>
-            <slider-zone id="lower">
-                <slider-switch id="lsh" on-dblclick="_handleTap" top-pos=12 up is-selectable></slider-switch>
+            <slider-zone id="lower" min-value="{{mix}}" max-value="{{max}}">
+                <slider-switch id="lsh" on-dblclick="_handleTap" value="0" top-pos=12 up is-selectable></slider-switch>
             </slider-zone>
         </div>
         <slider-endpoint id="high"></slider-endpoint>
@@ -54,7 +57,7 @@
                   value: 100,
                   reflectToAttribute: true
               },
-              _objects:{
+              objects:{
                   type: Array,
                   value: function(){
                       return [];
@@ -64,81 +67,43 @@
           },
           //Observers array
           observers: [
-              '_objectsPosChanged(_objects.*)'          //Fires when an item property is modified
+              'objectsPosChanged(objects.*)'          //Fires when an item property is modified
           ],
-          /*Ready function
-           *Set the slider specify in the attribute handles
-           */
-          ready:function(){
-              //this.setHandles(this.handles);
-          },
-          /*Public function
-           *Append slider-handles to the slider-zone
-           *@params numberOfHandles
-           */
-          setHandles: function(numberOfHandles){
-              var i = numberOfHandles;                                                  //initialize number of loops
-              //Check if there are loops left
-              if(numberOfHandles != 0){
-                  i--;                                                                  //decrease loops var
-                  this._attachSliderHandle();                                           //append a slider Handle to the upper slider-zone
-                  this.setHandles(i);  
-              }else{
-                  return;                                                               //End recursion
-              }
-          },
-          /*Private function
-           *Create a slider-handle and append it to the slider-zone
-           */
-          _attachSliderHandle:function(){                                               
-              var s_h = Polymer.Base.create('slider-switch');               //Create slider-handle component
-              var generatedId = this._getNewId();                           //Generated new id based on slider-zone's children
-              Polymer.dom(this.$.upper).appendChild(s_h);                   //Append slider-handle to the slider-zone
-              this.set('id',generatedId,s_h);                               //Set id to the slider-handle                                    
-              this.push('_objects',{pos:0,isSelected:false});                 //push slider-handle position to the _objects array
-              //this.listen(s_h, 'tap', '_deleteHandle');                   //add Tap event listener
-              this.listen(s_h, 'tap', '_toggleSelection');                  //add Tap event listener
-              this.listen(s_h, 'track', '_handleTrack');
-              Polymer.dom.flush();
-          },
           //attach a slider-handle based on position
           _handleTap:function(e){
-              /*var s_h = Polymer.Base.create('slider-switch');                           //create slider-handle component
-              this.set('position',this._getCurrentPosition(e),s_h);     
+              //create slider-handle component Programatically
+              /*var s_h = Polymer.Base.create('slider-switch');
+              this.set('position',this._getCurrentPosition(e),s_h);
               this.set('isSelectable',true,s_h);
               this.set('topPos',-20,s_h);
               Polymer.dom(this.$.upper).appendChild(s_h);
               Polymer.dom.flush()*/
-              this.push('_objects',{position : this._getCurrentPosition(e)});      
+              this.push('objects',{value : this._getCurrentPosition(e)});
           },
           _getCurrentPosition(e){
-              return e.currentTarget.position;                     //Compute current position on the X axis
+              return e.currentTarget.value;                     //Compute current position on the X axis
           },
           //detach the clicked slider-handle
           /*_deleteHandle: function(e){
               var deletedElement = Polymer.dom(this.$.upper).removeChild($(e.currentTarget)[0]);
-              this.splice('_objects', deletedElement.id,1);
+              this.splice('objects', deletedElement.id,1);
               this._updateIds(deletedElement.id);
               Polymer.dom.flush();
           },*/
           //Observer callback
-          _objectsPosChanged: function(cr){
-              if(cr.path.includes("position")){
-                  var nameSubpath = cr.path.indexOf('.position');
+          objectsPosChanged: function(cr){
+              if(cr.path.includes("value")){
+                  var nameSubpath = cr.path.indexOf('.value');
                   var itempath = cr.path.substring(0, nameSubpath);
                   var item = this.get(itempath);
                   var index = cr.base.indexOf(item);
-                  this._checkBoundaries(item.position);
-                  //console.log('Item ' + index + ' changed, new position is: ' + item.position);
+                  //this._checkBoundaries(item.position);
+                  //console.log('Item ' + index + ' changed, new position is: ' + item.value);
               }
           },
           /*Map slider-hanlde value base on its position
            *@params {e: Event, positionX: slider-handle current x}
            */
-          _mapBoundaries: function(e, positionX){
-              var percent = Math.round((positionX*100)/$(e.currentTarget).parent().width())
-              return Math.round((this.max - this.min)*percent/100)+this.min;
-          },
           _checkBoundaries: function(pos){
               if(pos == this.max){
                   if(!this.$.high.hardLimit){
@@ -150,9 +115,8 @@
                       this.min = this.min - 1;
                   }
               }
-          },
-          
+          }
+
     });
   </script>
 </dom-module>
-
