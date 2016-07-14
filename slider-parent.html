@@ -20,17 +20,19 @@
     </style>
         <slider-endpoint id="low" min></slider-endpoint>
         <div class="slider-main">
-            <slider-zone id="upper" min-value="{{mix}}" max-value="{{max}}">
+            <slider-zone id="upper" min-value="{{min}}" max-value="{{max}}">
                 <template id="handles" is="dom-repeat" items="{{objects}}">
                     <slider-switch index="{{index}}"
                                   value="{{item.value}}"
+                                  uid="{{item.uid}}"
+                                  hover="{{item.hover}}"
                                   top-pos=-20
                                   is-selectable></slider-switch>
                 </template>
             </slider-zone>
             <slider-bar></slider-bar>
-            <slider-zone id="lower" min-value="{{mix}}" max-value="{{max}}">
-                <slider-switch id="lsh" on-dblclick="_handleTap" value="0" top-pos=12 up is-selectable></slider-switch>
+            <slider-zone id="lower" min-value="{{min}}" max-value="{{max}}">
+                  <slider-switch id="lsh" on-dblclick="_handleTap" value="0" top-pos=12 up is-selectable></slider-switch>
             </slider-zone>
         </div>
         <slider-endpoint id="high"></slider-endpoint>
@@ -97,9 +99,33 @@
                   var itempath = cr.path.substring(0, nameSubpath);
                   var item = this.get(itempath);
                   var index = cr.base.indexOf(item);
-                  //this._checkBoundaries(item.position);
-                  //console.log('Item ' + index + ' changed, new position is: ' + item.value);
+                  var _modelContainer = this._searchModelByUid(item.uid);
+                  var _modelViewer = this._getModelViewer()
+                  // USE SET METHOD WHEN MUTATING OBJECTS OR ARRAYS,
+                  // never use this approach _thumbNail.model.params.p1 = item.value;
+                  //param: path (string)
+                  //param: newValue (String,Number,Boolean)
+                  // element.set(path,newValue);
+                  _modelContainer.set('model.params.'+item.paramNumber,item.value);
+                  if(item.uid == _modelViewer.model.uid)
+                    _modelViewer.set('model.params.'+item.paramNumber,item.value);
+
+                  //console.log(_modelContainer.model.params);
+                  console.log('Item ' + index + ' changed, new position is: ' + item.value);
               }
+              if(cr.path.includes("hover")){
+                var nameSubpath = cr.path.indexOf('.hover');
+                var itempath = cr.path.substring(0, nameSubpath);
+                var item = this.get(itempath);
+                var index = cr.base.indexOf(item);
+                var _modelContainer = this._searchModelByUid(item.uid);
+                if(item.hover){
+                  _modelContainer.set('hover',true);
+                }else {
+                  _modelContainer.set('hover',false);
+                }
+                console.log('Item ' + item.uid + ' changed,  is hovered: ' + item.hover);
+            }
           },
           /*Map slider-hanlde value base on its position
            *@params {e: Event, positionX: slider-handle current x}
@@ -115,6 +141,18 @@
                       this.min = this.min - 1;
                   }
               }
+          },
+          _searchModelByUid:function(uid){
+            var _slidersWrapper = Polymer.dom(this).parentNode;
+            var _paperHeaderPanelDrawer = Polymer.dom(_slidersWrapper).parentNode;
+            var _paperDrawerPanel = Polymer.dom(_paperHeaderPanelDrawer).parentNode;
+            return  _paperDrawerPanel.querySelector('model-container[id="'+uid+'"]');
+          },
+          _getModelViewer:function(){
+            var _slidersWrapper = Polymer.dom(this).parentNode;
+            var _paperHeaderPanelDrawer = Polymer.dom(_slidersWrapper).parentNode;
+            var _paperDrawerPanel = Polymer.dom(_paperHeaderPanelDrawer).parentNode;
+            return  _paperDrawerPanel.querySelector('model-viewer');
           }
 
     });
