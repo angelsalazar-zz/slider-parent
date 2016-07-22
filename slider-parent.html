@@ -22,7 +22,7 @@
         <div class="slider-main">
             <slider-zone id="upper" min-value="{{min}}" max-value="{{max}}">
                 <template id="handles" is="dom-repeat" items="{{objects}}">
-                    <slider-switch index="{{index}}"
+                    <slider-switch
                                   value="{{item.value}}"
                                   uid="{{item.uid}}"
                                   hover="{{item.hover}}"
@@ -100,18 +100,16 @@
                   var item = this.get(itempath);
                   var index = cr.base.indexOf(item);
                   var _modelContainer = this._searchModelByUid(item.uid);
-                  var _modelViewer = this._getModelViewer()
+                  //var _modelViewer = this._getModelViewer()
                   // USE SET METHOD WHEN MUTATING OBJECTS OR ARRAYS,
                   // never use this approach _thumbNail.model.params.p1 = item.value;
                   //param: path (string)
                   //param: newValue (String,Number,Boolean)
                   // element.set(path,newValue);
                   _modelContainer.set('model.params.'+item.paramNumber,item.value);
-                  if(item.uid == _modelViewer.model.uid)
-                    _modelViewer.set('model.params.'+item.paramNumber,item.value);
 
                   //console.log(_modelContainer.model.params);
-                  console.log('Item ' + index + ' changed, new position is: ' + item.value);
+                  //console.log('Item ' + index + ' changed, new position is: ' + item.value);
               }
               if(cr.path.includes("hover")){
                 var nameSubpath = cr.path.indexOf('.hover');
@@ -120,11 +118,11 @@
                 var index = cr.base.indexOf(item);
                 var _modelContainer = this._searchModelByUid(item.uid);
                 if(item.hover){
-                  _modelContainer.set('hover',true);
+                  _modelContainer.set('selecting',true);
                 }else {
-                  _modelContainer.set('hover',false);
+                  _modelContainer.set('selecting',false);
                 }
-                console.log('Item ' + item.uid + ' changed,  is hovered: ' + item.hover);
+                //console.log('Item ' + item.uid + ' changed,  is hovered: ' + item.hover);
             }
           },
           /*Map slider-hanlde value base on its position
@@ -144,16 +142,10 @@
           },
           _searchModelByUid:function(uid){
             var _slidersWrapper = Polymer.dom(this).parentNode;
-            var _paperHeaderPanelDrawer = Polymer.dom(_slidersWrapper).parentNode;
-            var _paperDrawerPanel = Polymer.dom(_paperHeaderPanelDrawer).parentNode;
-            return  _paperDrawerPanel.querySelector('model-container[id="'+uid+'"]');
+            var _parametersContainer = Polymer.dom(_slidersWrapper).parentNode;
+            var _content = Polymer.dom(_parametersContainer).parentNode;
+            return  _content.querySelector('thumb-nail[id="'+uid+'"]');
           },
-          _getModelViewer:function(){
-            var _slidersWrapper = Polymer.dom(this).parentNode;
-            var _paperHeaderPanelDrawer = Polymer.dom(_slidersWrapper).parentNode;
-            var _paperDrawerPanel = Polymer.dom(_paperHeaderPanelDrawer).parentNode;
-            return  _paperDrawerPanel.querySelector('model-viewer');
-          }
 
     });
   </script>
