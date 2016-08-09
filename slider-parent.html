@@ -60,11 +60,7 @@
                   }
               }
           },
-<<<<<<< HEAD
 
-=======
-
->>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
           //attach a slider-handle based on position
           _handleTap:function(e){
               //create slider-handle component Programatically
@@ -86,45 +82,6 @@
               this._updateIds(deletedElement.id);
               Polymer.dom.flush();
           },*/
-<<<<<<< HEAD
-<<<<<<< HEAD
-          //Observer callback
-          objectsPosChanged: function(cr){
-              if(cr.path.includes("value")){
-                  var nameSubpath = cr.path.indexOf('.value');
-                  var itempath = cr.path.substring(0, nameSubpath);
-                  var item = this.get(itempath);
-                  var index = cr.base.indexOf(item);
-                  var _modelContainer = this._searchModelByUid(item.uid);
-                  //var _modelViewer = this._getModelViewer()
-                  // USE SET METHOD WHEN MUTATING OBJECTS OR ARRAYS,
-                  // never use this approach _thumbNail.model.params.p1 = item.value;
-                  //param: path (string)
-                  //param: newValue (String,Number,Boolean)
-                  // element.set(path,newValue);
-                  _modelContainer.set('model.params.'+item.paramNumber,item.value);
-
-                  //console.log(_modelContainer.model.params);
-                  //console.log('Item ' + index + ' changed, new position is: ' + item.value);
-              }
-              if(cr.path.includes("hover")){
-                var nameSubpath = cr.path.indexOf('.hover');
-                var itempath = cr.path.substring(0, nameSubpath);
-                var item = this.get(itempath);
-                var index = cr.base.indexOf(item);
-                var _modelContainer = this._searchModelByUid(item.uid);
-                if(item.hover){
-                  _modelContainer.set('selecting',true);
-                }else {
-                  _modelContainer.set('selecting',false);
-                }
-                //console.log('Item ' + item.uid + ' changed,  is hovered: ' + item.hover);
-            }
-          },
-=======
->>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
-=======
->>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
           /*Map slider-hanlde value base on its position
            *@params {e: Event, positionX: slider-handle current x}
            */
@@ -139,20 +96,7 @@
                       this.min = this.min - 1;
                   }
               }
-<<<<<<< HEAD
-<<<<<<< HEAD
-          },
-          _searchModelByUid:function(uid){
-            var _slidersWrapper = Polymer.dom(this).parentNode;
-            var _parametersContainer = Polymer.dom(_slidersWrapper).parentNode;
-            var _content = Polymer.dom(_parametersContainer).parentNode;
-            return  _content.querySelector('thumb-nail[id="'+uid+'"]');
-          },
-=======
-=======
->>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
           }
->>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
 
     });
   </script>
