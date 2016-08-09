@@ -25,14 +25,15 @@
                     <slider-switch
                                   value="{{item.value}}"
                                   uid="{{item.uid}}"
-                                  hover="{{item.hover}}"
-                                  top-pos=-20
-                                  is-selectable></slider-switch>
+                                  selected="{{item.selected}}"
+                                  selecting="{{item.selecting}}"
+                                  coordinates="{{item.coordinates}}"
+                                  selectable></slider-switch>
                 </template>
             </slider-zone>
             <slider-bar></slider-bar>
             <slider-zone id="lower" min-value="{{min}}" max-value="{{max}}">
-                  <slider-switch id="lsh" on-dblclick="_handleTap" value="0" top-pos=12 up is-selectable></slider-switch>
+                  <slider-switch id="lsh" on-dblclick="_handleTap" value="0" up selectable></slider-switch>
             </slider-zone>
         </div>
         <slider-endpoint id="high"></slider-endpoint>
@@ -42,17 +43,10 @@
       Polymer({
           is: 'slider-parent',
           properties:{
-              handles:{
-                  type: Number,
-                  value:0,
-                  reflectToAttribute: true,
-                  notify:true
-              },
               min:{
                   type:Number,
                   value:0,
-                  reflectToAttribute: true,
-                  notify:true
+                  reflectToAttribute: true
               },
               max:{
                   type: Number,
@@ -63,14 +57,10 @@
                   type: Array,
                   value: function(){
                       return [];
-                  },
-                  notify:true
+                  }
               }
           },
-          //Observers array
-          observers: [
-              'objectsPosChanged(objects.*)'          //Fires when an item property is modified
-          ],
+
           //attach a slider-handle based on position
           _handleTap:function(e){
               //create slider-handle component Programatically
@@ -92,6 +82,7 @@
               this._updateIds(deletedElement.id);
               Polymer.dom.flush();
           },*/
+<<<<<<< HEAD
           //Observer callback
           objectsPosChanged: function(cr){
               if(cr.path.includes("value")){
@@ -125,6 +116,8 @@
                 //console.log('Item ' + item.uid + ' changed,  is hovered: ' + item.hover);
             }
           },
+=======
+>>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
           /*Map slider-hanlde value base on its position
            *@params {e: Event, positionX: slider-handle current x}
            */
@@ -139,6 +132,7 @@
                       this.min = this.min - 1;
                   }
               }
+<<<<<<< HEAD
           },
           _searchModelByUid:function(uid){
             var _slidersWrapper = Polymer.dom(this).parentNode;
@@ -146,6 +140,9 @@
             var _content = Polymer.dom(_parametersContainer).parentNode;
             return  _content.querySelector('thumb-nail[id="'+uid+'"]');
           },
+=======
+          }
+>>>>>>> 94617ae444d56a286947669b776af7aa70ae50c9
 
     });
   </script>
